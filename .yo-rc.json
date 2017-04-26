@@ -1,0 +1,10 @@
+{
+  "generator-mendix": {
+    "promptValues": {
+      "copyright": "JAM-IT",
+      "license": "Apache 2",
+      "author": "hw.yang",
+      "boilerplate": "appstore"
+    }
+  }
+}
