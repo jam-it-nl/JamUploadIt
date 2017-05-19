@@ -66,15 +66,8 @@ define([
         _readOnly: false,
 
         //custom variables
-        _fileEntries: [],
+        _fileUpload: null,
 
-        validateEntries: function(entries) {
-
-        },
-
-        uploadEntries: function(entries) {
-
-        },
 
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
@@ -88,7 +81,18 @@ define([
             console.log("test")
             logger.debug(this.id + ".postCreate");
 
-            this.fileUploadController = new FileUpload(this.uploadInputNode, this.uploadDetailsNode);
+            let supportedExtensions;
+            if(this.fileTypes.length > 0) {
+                supportedExtensions =  this.fileTypes.split(',');
+            }
+
+            let maxFileSize = this.maxFileSize
+
+            let fileUploadSettings = {
+                supportedExtensions, maxFileSize
+            };
+
+            this._fileUpload = new FileUpload(this.inputNodes, this.uploadDetailsNode, fileUploadSettings);
 
             if (this.readOnly || this.get("disabled") || this.readonly) {
               this._readOnly = true;
@@ -139,12 +143,14 @@ define([
         // Attach events to HTML dom elements
         _setupEvents: function () {
             logger.debug(this.id + "._setupEvents");
-            let self = this;
 
-            // jamUploadIt.uploadFileInput(this.uploadInputNode);
-            // this.connect(this.uploadInputNode, "change", function (e) {
-            //     jamUploadIt.uploadFileInput(this.uploadInputNode);
-            // });
+            this._fileUpload.setEventBinding((uploadFunction) => {
+                let guid = null;
+                this._execMf(this.mfToExecute, this._contextObj.getGuid(), (objects)=>{
+                    guid = objects[0].getGuid();
+                    uploadFunction(guid);
+                });
+            });
         },
 
         _execMf: function (mf, guid, cb) {

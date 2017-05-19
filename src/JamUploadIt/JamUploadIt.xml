@@ -26,12 +26,20 @@
 			<category>Behavior</category>
 			<description>Time an upload may use before being aborted in milliseconds(0 is unlimited)</description>
 		</property>
+
 		<property key="mfToExecute" type="microflow" required="false" defaultValue="">
 			<caption>Microflow</caption>
 			<category>Behavior</category>
-			<description>The microflow to execute on click.</description>
-			<returnType type="Boolean" />
+			<description>The microflow creates a new FileDocument.</description>
+			<returnType type="Object" isList="false" entityProperty="test"/>
 		</property>
+
+        <property key="test" type="entity" required="false" isPath="no">
+            <caption>a</caption>
+            <category>x</category>
+            <description/>
+        </property>
+
 	</properties>
 </widget>
 

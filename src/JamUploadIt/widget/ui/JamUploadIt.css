@@ -2,9 +2,11 @@
     display: grid;
     grid-template-columns: 2em auto;
     grid-gap: 10px;
-
 }
 
+.jam-upload-it .list-group-item.no-columns {
+    grid-template-columns: auto;
+}
 
 .jam-upload-it .list-group-item span.name {
     display:block;
