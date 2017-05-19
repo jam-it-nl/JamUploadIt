@@ -48,7 +48,7 @@ define([
         templateString: widgetTemplate,
 
         // DOM elements
-        inputNodes: null,
+        component: null,
         uploadInputNode: null,
         uploadDetailsNode: null,
 
