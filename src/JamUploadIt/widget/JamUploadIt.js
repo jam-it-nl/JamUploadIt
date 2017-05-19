@@ -147,6 +147,7 @@ define([
                 console.log(file.name);
                 this._execMf(this.mfToExecute, this._contextObj.getGuid(), (objects)=>{
                     let guid = objects[0].getGuid();
+                    console.log(`callback guid ${guid}`);
                     uploadFunction(guid);
                 });
             });
