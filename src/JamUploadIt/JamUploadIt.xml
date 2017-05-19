@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <widget id="JamUploadIt.widget.JamUploadIt" needsEntityContext="true" xmlns="http://www.mendix.com/widget/1.0/">
-    <name>JamUploadIt</name>
-    <description>The description of this widget.</description>
+	<name>JamUploadIt</name>
+	<description>Asynchronous multiple upload file</description>
 
-    <icon />
+	<icon />
 
-    <properties>
-        <property key="backgroundColor" type="attribute">
-            <caption>Background Color</caption>
-            <category>Appearance</category>
-            <description>The background color of the widget.</description>
-            <attributeTypes>
-                <attributeType name="String" />
-            </attributeTypes>
-        </property>
-        <property key="messageString" type="string" required="true" defaultValue="">
-            <caption>Message</caption>
-            <category>Appearance</category>
-            <description>The message visible within the widget.</description>
-        </property>
-        <property key="mfToExecute" type="microflow" required="false" defaultValue="">
-            <caption>Microflow</caption>
-            <category>Behavior</category>
-            <description>The microflow to execute on click.</description>
-            <returnType type="Boolean" />
-        </property>
-    </properties>
+	<properties>
+		<property key="maxFileSize" type="integer" defaultValue="0">
+			<caption>Maximum file size</caption>
+			<category>Behavior</category>
+			<description>Maximumax file size limit per file entry (0 is unlimited size) in kilobytes</description>
+		</property>
+		<property key="maxFiles" type="integer" defaultValue="0">
+			<caption>Maximum file entries</caption>
+			<category>Behavior</category>
+			<description>Maximum amount of file entries that can be uploaded (0 is unlimited)</description>
+		</property>
+		<property key="fileTypes" type="string" required="false">
+			<caption>Valid filetypes</caption>
+			<category>Behavior</category>
+			<description>Valid filetypes to be uploaded(0 is unlimited)</description>
+		</property>
+		<property key="timeout" type="integer" defaultValue="0">
+			<caption>Upload timeout</caption>
+			<category>Behavior</category>
+			<description>Time an upload may use before being aborted in milliseconds(0 is unlimited)</description>
+		</property>
+		<property key="mfToExecute" type="microflow" required="false" defaultValue="">
+			<caption>Microflow</caption>
+			<category>Behavior</category>
+			<description>The microflow to execute on click.</description>
+			<returnType type="Boolean" />
+		</property>
+	</properties>
 </widget>
 

@@ -33,13 +33,14 @@ define([
     "dojo/text",
     "dojo/html",
     "dojo/_base/event",
+    "dojo/text!JamUploadIt/widget/template/JamUploadIt.html",
+    "JamUploadIt/lib/fileupload"
 
-    "JamUploadIt/lib/jquery-1.11.2",
-    "dojo/text!JamUploadIt/widget/template/JamUploadIt.html"
-], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, lang, dojoText, dojoHtml, dojoEvent, _jQuery, widgetTemplate) {
+], function (declare, _WidgetBase, _TemplatedMixin, dom, dojoDom, dojoProp, dojoGeometry, dojoClass, dojoStyle, dojoConstruct, dojoArray, lang, dojoText, dojoHtml, dojoEvent, widgetTemplate, fileUpload) {
+
+    // let TestClass = require('./file-upload');
     "use strict";
-
-    var $ = _jQuery.noConflict(true);
+    const FileUpload = fileUpload.FileUpload;
 
     // Declare widget's prototype.
     return declare("JamUploadIt.widget.JamUploadIt", [ _WidgetBase, _TemplatedMixin ], {
@@ -48,14 +49,15 @@ define([
 
         // DOM elements
         inputNodes: null,
-        colorSelectNode: null,
-        colorInputNode: null,
-        infoTextNode: null,
+        uploadInputNode: null,
+        uploadDetailsNode: null,
 
         // Parameters configured in the Modeler.
         mfToExecute: "",
-        messageString: "",
-        backgroundColor: "",
+        maxFileSize: "",
+        maxFiles: "",
+        fileTypes:"",
+        timeout:"",
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
@@ -63,15 +65,30 @@ define([
         _alertDiv: null,
         _readOnly: false,
 
+        //custom variables
+        _fileEntries: [],
+
+        validateEntries: function(entries) {
+
+        },
+
+        uploadEntries: function(entries) {
+
+        },
+
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
+            logger.level(logger.DEBUG);
             logger.debug(this.id + ".constructor");
             this._handles = [];
         },
 
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
         postCreate: function () {
+            console.log("test")
             logger.debug(this.id + ".postCreate");
+
+            this.fileUploadController = new FileUpload(this.uploadInputNode, this.uploadDetailsNode);
 
             if (this.readOnly || this.get("disabled") || this.readonly) {
               this._readOnly = true;
@@ -122,20 +139,12 @@ define([
         // Attach events to HTML dom elements
         _setupEvents: function () {
             logger.debug(this.id + "._setupEvents");
-            this.connect(this.colorSelectNode, "change", function (e) {
-                // Function from mendix object to set an attribute.
-                this._contextObj.set(this.backgroundColor, this.colorSelectNode.value);
-            });
+            let self = this;
 
-            this.connect(this.infoTextNode, "click", function (e) {
-                // Only on mobile stop event bubbling!
-                this._stopBubblingEventOnMobile(e);
-
-                // If a microflow has been set execute the microflow on a click.
-                if (this.mfToExecute !== "") {
-                    this._execMf(this.mfToExecute, this._contextObj.getGuid());
-                }
-            });
+            // jamUploadIt.uploadFileInput(this.uploadInputNode);
+            // this.connect(this.uploadInputNode, "change", function (e) {
+            //     jamUploadIt.uploadFileInput(this.uploadInputNode);
+            // });
         },
 
         _execMf: function (mf, guid, cb) {
@@ -161,19 +170,9 @@ define([
         // Rerender the interface.
         _updateRendering: function (callback) {
             logger.debug(this.id + "._updateRendering");
-            this.colorSelectNode.disabled = this._readOnly;
-            this.colorInputNode.disabled = this._readOnly;
 
             if (this._contextObj !== null) {
                 dojoStyle.set(this.domNode, "display", "block");
-
-                var colorValue = this._contextObj.get(this.backgroundColor);
-
-                this.colorInputNode.value = colorValue;
-                this.colorSelectNode.value = colorValue;
-
-                dojoHtml.set(this.infoTextNode, this.messageString);
-                dojoStyle.set(this.infoTextNode, "background-color", colorValue);
             } else {
                 dojoStyle.set(this.domNode, "display", "none");
             }
@@ -189,16 +188,6 @@ define([
         _handleValidation: function (validations) {
             logger.debug(this.id + "._handleValidation");
             this._clearValidations();
-
-            var validation = validations[0],
-                message = validation.getReasonByAttribute(this.backgroundColor);
-
-            if (this._readOnly) {
-                validation.removeAttribute(this.backgroundColor);
-            } else if (message) {
-                this._addValidation(message);
-                validation.removeAttribute(this.backgroundColor);
-            }
         },
 
         // Clear validations.

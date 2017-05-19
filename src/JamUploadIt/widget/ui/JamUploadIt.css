@@ -1,17 +1,40 @@
-.widgetname {
-    
+.jam-upload-it .list-group-item {
+    display: grid;
+    grid-template-columns: 2em auto;
+    grid-gap: 10px;
+
 }
 
-.widgetname-message {
+
+.jam-upload-it .list-group-item span.name {
+    display:block;
 
 }
 
-.input-group-addon {
-    clear: both;
-    padding: 2px 6px;
+.jam-upload-it .glyphicon-ok,
+.jam-upload-it .glyphicon-remove{
+    font-size: 1.3em;
 }
 
-.widgetname-infoTextNode {
-    padding: 0.8em 1em;
-    margin-top: 10px;
+
+.jam-upload-it .loader {
+    border: 5px solid #f3f3f3;
+    -webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    border-top: 5px solid #555;
+    border-radius: 50%;
+    width: 2em;
+    height: 2em;
+    display:inline-block;
+    vertical-align: middle;
+}
+
+
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }

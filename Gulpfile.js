@@ -62,6 +62,13 @@ gulp.task("copy:js", function () {
         .pipe(gulp.dest(paths.TEST_WIDGETS_DEPLOYMENT_FOLDER));
 });
 
+//Note package.json needs file-upload package
+// gulp.task('copy:file-upload.js', function() {
+//    gulp.src('./node_modules/file-upload/file-upload.js')
+//    .pipe(gulp.dest('./src/JamUploadIt/lib'));
+// });
+
+
 gulp.task("copy:html", function () {
     return gulp.src(["./src/**/*.html"])
         .pipe(newer(paths.TEST_WIDGETS_DEPLOYMENT_FOLDER))
@@ -101,5 +108,6 @@ gulp.task("modeler", function (cb) {
     widgetBuilderHelper.runmodeler(MODELER_PATH, MODELER_ARGS, paths.TEST_PATH, cb);
 });
 
+// gulp.task("build", ["copy:file-upload.js", "compress"]);
 gulp.task("build", ["compress"]);
 gulp.task("version", ["version:xml", "version:json"]);
