@@ -153,23 +153,19 @@ define([
         },
 
         _execMf: function (mf, guid, cb) {
-            logger.debug(this.id + "._execMf");
             if (mf && guid) {
                 console.log(this.id + "._execMf");
-                mx.ui.action(mf, {
+                mx.data.action({
                     params: {
+                        actionname: mf,
                         applyto: "selection",
                         guids: [guid]
                     },
-                    callback: lang.hitch(this, function (objs) {
-                        if (cb && typeof cb === "function") {
-                            cb(objs);
-                        }
-                    }),
-                    error: function (error) {
+                    callback: cb,
+                    error: (error) => {
                         console.debug(error.description);
                     }
-                }, this);
+                });
             }
         },
 

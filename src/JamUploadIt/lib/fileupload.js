@@ -15,7 +15,10 @@ define(["JamUploadIt/lib/jquery-1.11.2"], function (jquery) {
             this.inputElement.onchange = () => {
                 for(let i = 0 ; i < this.inputElement.files.length; i++) {
                     let file  = this.inputElement.files[i];
-                    if(this.validate(file)) {
+
+                    let isValidFile = this.validate(file);
+
+                    if(isValidFile.isValid) {
                         getUploadIdFunction(file, (uploadId) => {
                             file.id = uploadId;
                             this.appendLoader(file);
@@ -26,7 +29,7 @@ define(["JamUploadIt/lib/jquery-1.11.2"], function (jquery) {
                             });
                         });
                     } else {
-                        this.appendInvalidFileMessage(file.name);
+                        this.appendInvalidFileMessage(isValidFile.message);
                     }
                 }
                 this.inputElement.value = '';
@@ -41,42 +44,57 @@ define(["JamUploadIt/lib/jquery-1.11.2"], function (jquery) {
                 </li>`));
         };
 
-        appendInvalidFileMessage(filename) {
+        appendInvalidFileMessage(message) {
             this.details.append($(`
                 <li class=\"list-group-item no-columns\">
                     <div class="alert alert-danger alert-dismissible" role="alert">
-                        ${filename} is not a valid file to upload.
+                        ${message}
                     </div>
                 </li>`));
         }
 
         validate(file) {
-            return this.validateMaxFileSize(file) && this.validateExtension(file);
+            let validSizeMessage = this.validateMaxFileSize(file);
+            if(validSizeMessage.isValid) {
+                return this.validateExtension(file);
+            }
+            return validSizeMessage;
         };
 
         validateExtension(file) {
+            let validMessage = {isValid : true};
+            let inValidMessage = { isValid : false, message: `U kunt hier alleen bestanden van de volgende types uploaden:${this.supportedExtensions.join(', ')}`};
+
             if(!this.supportedExtensions instanceof  Array) {
-                return true;
+                return validMessage;
             }
 
             if(file.name.lastIndexOf('.') == -1) {
-                return false;
+                return inValidMessage;
             }
 
             let extension = file.name.split('.').pop();
             for(let i = 0; i < this.supportedExtensions.length; i++) {
                 if(extension === this.supportedExtensions[i]) {
-                    return true;
+                    return validMessage;
                 }
             }
-            return false;
+            return inValidMessage;
         };
 
         validateMaxFileSize(file) {
             if(this.maxFileSize == null) {
-                return true
+                return {isValid : true}
             }
-            return file.size < this.maxFileSize;
+            return { isValid : file.size < this.maxFileSize, message: `De grootte van het geselecteerde bestand ${file.name} (${this.bytesToSize(file.size)}) is groter dan de maximum grootte (${this.bytesToSize((this.maxFileSize*1024))})`};
+        };
+
+        bytesToSize(bytes) {
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+            if (bytes === 0) return 'n/a'
+            const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10)
+            if (i === 0) return `${bytes} ${sizes[i]}`
+            return `${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`
         };
 
         defaultSuccess(e, file) {
