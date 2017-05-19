@@ -92,7 +92,7 @@ define([
                 supportedExtensions, maxFileSize
             };
 
-            this._fileUpload = new FileUpload(this.inputNodes, this.uploadDetailsNode, fileUploadSettings);
+            this._fileUpload = new FileUpload(this.uploadInputNode, this.uploadDetailsNode, fileUploadSettings);
 
             if (this.readOnly || this.get("disabled") || this.readonly) {
               this._readOnly = true;
@@ -143,11 +143,10 @@ define([
         // Attach events to HTML dom elements
         _setupEvents: function () {
             logger.debug(this.id + "._setupEvents");
-
-            this._fileUpload.setEventBinding((uploadFunction) => {
-                let guid = null;
+            this._fileUpload.setEventBinding((file, uploadFunction) => {
+                console.log(file.name);
                 this._execMf(this.mfToExecute, this._contextObj.getGuid(), (objects)=>{
-                    guid = objects[0].getGuid();
+                    let guid = objects[0].getGuid();
                     uploadFunction(guid);
                 });
             });
@@ -156,6 +155,7 @@ define([
         _execMf: function (mf, guid, cb) {
             logger.debug(this.id + "._execMf");
             if (mf && guid) {
+                console.log(this.id + "._execMf");
                 mx.ui.action(mf, {
                     params: {
                         applyto: "selection",
