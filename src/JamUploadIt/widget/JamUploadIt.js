@@ -53,7 +53,7 @@ define([
         uploadDetailsNode: null,
 
         // Parameters configured in the Modeler.
-        mfToExecute: "",
+        createFileDocuments: "",
         maxFileSize: "",
         maxFiles: "",
         fileTypes:"",
@@ -68,6 +68,8 @@ define([
         //custom variables
         _fileUpload: null,
 
+        guids: [],
+
 
         // dojo.declare.constructor is called to construct the widget instance. Implement to initialize non-primitive properties.
         constructor: function () {
@@ -78,7 +80,6 @@ define([
 
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
         postCreate: function () {
-            console.log("test")
             logger.debug(this.id + ".postCreate");
 
             let supportedExtensions;
@@ -89,7 +90,8 @@ define([
             let maxFileSize = this.maxFileSize
 
             let fileUploadSettings = {
-                supportedExtensions, maxFileSize
+                supportedExtensions: supportedExtensions,
+                maxFileSize: maxFileSize
             };
 
             this._fileUpload = new FileUpload(this.uploadInputNode, this.uploadDetailsNode, fileUploadSettings);
@@ -105,10 +107,15 @@ define([
         // mxui.widget._WidgetBase.update is called when context is changed or initialized. Implement to re-render and / or fetch data.
         update: function (obj, callback) {
             logger.debug(this.id + ".update");
-
             this._contextObj = obj;
             this._resetSubscriptions();
             this._updateRendering(callback); // We're passing the callback to updateRendering to be called after DOM-manipulation
+
+            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
+            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
+            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
+            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
+
         },
 
         // mxui.widget._WidgetBase.enable is called when the widget should enable editing. Implement to enable editing if widget is input widget.
@@ -141,21 +148,33 @@ define([
         },
 
         // Attach events to HTML dom elements
+        // _setupEvents: function () {
+        //     logger.debug(this.id + "._setupEvents");
+        //
+        //     this._fileUpload.setEventBinding((file, uploadFunction) => {
+        //         console.log(file.name);
+        //         //TODO: workaround remove this code,  if-statement is a workaround to get guids, microflow will return 10 guids
+        //             this._execMf(this.createFileDocuments, this._contextObj.getGuid(),(objects) s {
+        //                 for(let i = 0 ; i < objects.length; i++) {
+        //                     this.guids.push(objects[i].getGuid());
+        //                 }
+        //                 uploadFunction(this.guids.shift());
+        //             });
+        //     });
+        // },
         _setupEvents: function () {
             logger.debug(this.id + "._setupEvents");
-            this._fileUpload.setEventBinding((file, uploadFunction) => {
-                console.log(file.name);
-                this._execMf(this.mfToExecute, this._contextObj.getGuid(), (objects)=>{
-                    let guid = objects[0].getGuid();
-                    console.log(`callback guid ${guid}`);
-                    uploadFunction(guid);
-                });
-            });
+            let self = this;
+            this._fileUpload.setEventBinding(function(cb) {self.getGuids(cb);});
+        },
+
+        getGuids : function (cb) {
+            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), cb);
         },
 
         _execMf: function (mf, guid, cb) {
             if (mf && guid) {
-                console.log(this.id + "._execMf");
+                console.log(this.id + "._execMf" + guid);
                 mx.data.action({
                     params: {
                         actionname: mf,
@@ -163,7 +182,7 @@ define([
                         guids: [guid]
                     },
                     callback: cb,
-                    error: (error) => {
+                    error: function (error) {
                         console.debug(error.description);
                     }
                 });

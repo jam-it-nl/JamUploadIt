@@ -11,32 +11,22 @@
 			<category>Behavior</category>
 			<description>Maximumax file size limit per file entry (0 is unlimited size) in kilobytes</description>
 		</property>
-		<property key="maxFiles" type="integer" defaultValue="0">
-			<caption>Maximum file entries</caption>
-			<category>Behavior</category>
-			<description>Maximum amount of file entries that can be uploaded (0 is unlimited)</description>
-		</property>
 		<property key="fileTypes" type="string" required="false">
 			<caption>Valid filetypes</caption>
 			<category>Behavior</category>
-			<description>Valid filetypes to be uploaded(0 is unlimited)</description>
-		</property>
-		<property key="timeout" type="integer" defaultValue="0">
-			<caption>Upload timeout</caption>
-			<category>Behavior</category>
-			<description>Time an upload may use before being aborted in milliseconds(0 is unlimited)</description>
+			<description>Valid filetypes to be uploaded example jpg,jpeg,png</description>
 		</property>
 
-		<property key="mfToExecute" type="microflow" required="false" defaultValue="">
-			<caption>Microflow</caption>
+		<property key="createFileDocuments" type="microflow" required="false" defaultValue="">
+			<caption>Create FileDocumentList</caption>
 			<category>Behavior</category>
-			<description>The microflow creates a new FileDocument.</description>
-			<returnType type="Object" isList="false" entityProperty="test"/>
+			<description>The microflow that creates a FileList.</description>
+			<returnType type="Object" isList="true" entityProperty="test"/>
 		</property>
 
         <property key="test" type="entity" required="false" isPath="no">
-            <caption>a</caption>
-            <category>x</category>
+            <caption>ListType</caption>
+            <category>Behavior</category>
             <description/>
         </property>
 
