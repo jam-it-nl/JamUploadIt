@@ -1,11 +1,12 @@
 // define([], function () {
-define(["JamUploadIt/lib/jquery-1.11.2"], function (jquery) {
+define(["./jquery-1.11.2"], function (jquery) {
     //hack, setting $ on window so i can use it inside my class
     window.$ = window.$ || jquery.noConflict(true);
 
     function FileUpload(inputElement, uploadDetailsNode, settings) {
+        this.jQuery = window.$;
         this.inputElement = inputElement;
-        this.details = $(uploadDetailsNode);
+        this.details = window.$(uploadDetailsNode);
         this.maxFileSize = settings.maxFileSize;
         this.supportedExtensions = settings.supportedExtensions;
         this.guids = [];
@@ -53,11 +54,11 @@ define(["JamUploadIt/lib/jquery-1.11.2"], function (jquery) {
     };
 
     FileUpload.prototype.appendLoader = function appendLoader(file) {
-        this.details.append($("<li class=\"list-group-item\"><div class=\"loader\" id=\"loader-"+file.id+"\"></div><span class=\"name\">"+file.name+"</span></li>"));
+        this.details.append(this.jQuery("<li class=\"list-group-item\"><div class=\"loader\" id=\"loader-"+file.id+"\"></div><span class=\"name\">"+file.name+"</span></li>"));
     };
 
     FileUpload.prototype.appendInvalidFileMessage = function appendInvalidFileMessage(message) {
-        this.details.append($("<li class=\"list-group-item no-columns\"><div class=\"alert alert-danger alert-dismissible\" role=\"alert\">"+message+"</div></li>"));
+        this.details.append(this.jQuery("<li class=\"list-group-item no-columns\"><div class=\"alert alert-danger alert-dismissible\" role=\"alert\">"+message+"</div></li>"));
     };
 
     FileUpload.prototype.validate = function validate(file) {
@@ -93,17 +94,24 @@ define(["JamUploadIt/lib/jquery-1.11.2"], function (jquery) {
         if(this.maxFileSize == null) {
             return {isValid : true}
         }
-        return { isValid : file.size < (this.maxFileSize*1024), message: "De grootte van het geselecteerde bestand "+file.name+" "+ (this.bytesToSize(file.size))+" is groter dan de maximum grootte "+(this.bytesToSize((this.maxFileSize*1024)))};
+
+        let fileIsValid = file.size <= (this.maxFileSize*1024);
+        let validationMessage = !fileIsValid ? "De grootte van het geselecteerde bestand "+file.name+" "+ (this.formatSize(file.size))+" is groter dan de maximum grootte "+(this.formatSize((this.maxFileSize*1024))): null;
+
+        return {
+            isValid: fileIsValid,
+            message: validationMessage
+        };
     };
 
-    FileUpload.prototype.bytesToSize = function bytesToSize(bytes) {
+    FileUpload.prototype.formatSize = function formatSize(bytes) {
         var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
         if (bytes === 0) return 'n/a'
         var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)), 10)
         if (i === 0) {
             return bytes+" "+ sizes[i];
         }
-        return (bytes / (1024 * i)).toFixed(1)+" "+ sizes[i];
+        return (bytes / (1024 * Math.pow(1000, (i-1)))).toFixed(1)+" "+ sizes[i];
     };
 
     FileUpload.prototype.defaultSuccess = function defaultSuccess(e, file) {
