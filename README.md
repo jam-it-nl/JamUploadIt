@@ -11,7 +11,7 @@ To use the widget, place it in a Entity context (like a dataview) and configure 
 * onChange events
 
 ## Limitations
-* Buttons, checkboxes, radiobuttons and dropdowns (as add-on) are not yet implemented
+* validation message when max file size exceeded display's wrong size of the uploaded files.
 
 For any request or bug please create an issue at [GitHub](https://github.com/JAM-IT-NL/JamUploadIt).
 
