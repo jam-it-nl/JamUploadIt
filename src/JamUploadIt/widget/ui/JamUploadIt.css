@@ -2,6 +2,7 @@
     display: grid;
     grid-template-columns: 2em auto;
     grid-gap: 10px;
+    border: 0px;
 }
 
 .jam-upload-it .list-group-item.no-columns {
@@ -10,7 +11,6 @@
 
 .jam-upload-it .list-group-item span.name {
     display:block;
-
 }
 
 .jam-upload-it .glyphicon-ok,
