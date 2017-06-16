@@ -58,6 +58,8 @@ define([
         maxFiles: "",
         fileTypes:"",
         timeout:"",
+        filesAttribute:"",
+        fileEntity:"",
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
@@ -105,14 +107,16 @@ define([
 
             let fileUploadSettings = {
                 supportedExtensions: supportedExtensions,
-                maxFileSize: maxFileSize
+                maxFileSize: maxFileSize,
+                fileEntity: this.fileEntity,
+                filesAttribute: this.filesAttribute.substr(0, this.filesAttribute.indexOf("/"))
             };
 
             this._fileUpload = new FileUpload(this._contextObj, this.uploadInputNode, this.uploadDetailsNode, fileUploadSettings);
             let self = this;
             this._fileUpload.setEventBinding((uploadFunction) => {
                 mx.data.create({
-                    entity: "System.FileDocument",
+                    entity: self.fileEntity,
                     callback: function(obj) {
                         uploadFunction(obj.getGuid());
                     },

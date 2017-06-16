@@ -6,6 +6,19 @@
 	<icon />
 
 	<properties>
+
+        <property key="fileEntity" type="entity" required="true">
+            <caption>File entity</caption>
+            <category>Behavior</category>
+            <description></description>
+        </property>
+
+        <property key="filesAttribute" type="entity" isPath="optional" pathType="referenceSet" required="true">
+            <caption>files set</caption>
+            <category>Behavior</category>
+            <description>The reference to FileDocument set</description>
+        </property>
+
 		<property key="maxFileSize" type="integer" defaultValue="0">
 			<caption>Maximum file size</caption>
 			<category>Behavior</category>
@@ -16,20 +29,6 @@
 			<category>Behavior</category>
 			<description>Valid filetypes to be uploaded example jpg,jpeg,png</description>
 		</property>
-
-		<property key="createFileDocuments" type="microflow" required="false" defaultValue="">
-			<caption>Create FileDocumentList</caption>
-			<category>Behavior</category>
-			<description>The microflow that creates a FileList.</description>
-			<returnType type="Object" isList="true" entityProperty="test"/>
-		</property>
-
-        <property key="test" type="entity" required="false" isPath="no">
-            <caption>ListType</caption>
-            <category>Behavior</category>
-            <description/>
-        </property>
-
 	</properties>
 </widget>
 
