@@ -81,21 +81,6 @@ define([
         // dijit._WidgetBase.postCreate is called after constructing the widget. Implement to do extra setup work.
         postCreate: function () {
             logger.debug(this.id + ".postCreate");
-
-            let supportedExtensions;
-            if(this.fileTypes.length > 0) {
-                supportedExtensions =  this.fileTypes.split(',');
-            }
-
-            let maxFileSize = this.maxFileSize
-
-            let fileUploadSettings = {
-                supportedExtensions: supportedExtensions,
-                maxFileSize: maxFileSize
-            };
-
-            this._fileUpload = new FileUpload(this.uploadInputNode, this.uploadDetailsNode, fileUploadSettings);
-
             if (this.readOnly || this.get("disabled") || this.readonly) {
               this._readOnly = true;
             }
@@ -110,6 +95,33 @@ define([
             this._contextObj = obj;
             this._resetSubscriptions();
             this._updateRendering(callback); // We're passing the callback to updateRendering to be called after DOM-manipulation
+
+            let supportedExtensions;
+            if(this.fileTypes.length > 0) {
+                supportedExtensions =  this.fileTypes.split(',');
+            }
+
+            let maxFileSize = this.maxFileSize
+
+            let fileUploadSettings = {
+                supportedExtensions: supportedExtensions,
+                maxFileSize: maxFileSize
+            };
+
+            this._fileUpload = new FileUpload(this._contextObj, this.uploadInputNode, this.uploadDetailsNode, fileUploadSettings);
+            let self = this;
+            this._fileUpload.setEventBinding((uploadFunction) => {
+                mx.data.create({
+                    entity: "System.FileDocument",
+                    callback: function(obj) {
+                        uploadFunction(obj.getGuid());
+                    },
+                    error: function(e) {
+                        console.log("an error occured: " + e);
+                        self.uploadInputNode.value = '';
+                    }
+                });
+            });
 
             // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
             // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
@@ -148,24 +160,8 @@ define([
         },
 
         // Attach events to HTML dom elements
-        // _setupEvents: function () {
-        //     logger.debug(this.id + "._setupEvents");
-        //
-        //     this._fileUpload.setEventBinding((file, uploadFunction) => {
-        //         console.log(file.name);
-        //         //TODO: workaround remove this code,  if-statement is a workaround to get guids, microflow will return 10 guids
-        //             this._execMf(this.createFileDocuments, this._contextObj.getGuid(),(objects) s {
-        //                 for(let i = 0 ; i < objects.length; i++) {
-        //                     this.guids.push(objects[i].getGuid());
-        //                 }
-        //                 uploadFunction(this.guids.shift());
-        //             });
-        //     });
-        // },
         _setupEvents: function () {
             logger.debug(this.id + "._setupEvents");
-            let self = this;
-            this._fileUpload.setEventBinding(function(cb) {self.getGuids(cb);});
         },
 
         getGuids : function (cb) {

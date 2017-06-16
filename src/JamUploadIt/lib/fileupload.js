@@ -3,54 +3,55 @@ define(["./jquery-1.11.2"], function (jquery) {
     //hack, setting $ on window so i can use it inside my class
     window.$ = window.$ || jquery.noConflict(true);
 
-    function FileUpload(inputElement, uploadDetailsNode, settings) {
+    function FileUpload(contextObject, inputElement, uploadDetailsNode, settings) {
         this.jQuery = window.$;
+        this.contextObject = contextObject;
         this.inputElement = inputElement;
         this.details = window.$(uploadDetailsNode);
         this.maxFileSize = settings.maxFileSize;
         this.supportedExtensions = settings.supportedExtensions;
-        this.guids = [];
     };
 
-    FileUpload.prototype.setEventBinding = function setEventBinding(getGuids, successFunction, errorFunction) {
+    FileUpload.prototype.setEventBinding = function setEventBinding(getGuid, successFunction, errorFunction) {
         successFunction = successFunction || this.defaultSuccess;
         errorFunction = errorFunction || this.defaultError;
 
         let self = this;
         this.inputElement.onchange = function() {
             let files = self.inputElement.files;
-            getGuids( function (objects) {
-                for(let i = 0 ;  i< objects.length; i++) {
-                    self.guids.push(objects[i].getGuid());
-                }
-                self.validateAndUploadFiles(files,successFunction, errorFunction);
-            });
+            for(let i = 0 ; i < files.length; i++) {
+                getGuid((guid) => {
+                    let last = false;
+                    if(i == files.length -1) {
+                        last = true
+                    }
+                    self.validateAndUploadFiles(guid, files[i], last, successFunction, errorFunction);
+
+                });
+            }
+
         }
     };
 
-    FileUpload.prototype.validateAndUploadFiles = function validateAndUploadFiles(files, successFunction, errorFunction) {
-        for(let i = 0 ; i < files.length; i++) {
-            let file  = files[i];
-            let isValidFile = this.validate(file);
-            if(isValidFile.isValid) {
-
-                file.id = this.guids.shift();
-                if(file.id == undefined) {
-                    break;
-                }
-                this.appendLoader(file);
-                window.mx.data.saveDocument(file.id, file.name, {}, file, function (e) {
-                    successFunction(e, file);
-                }, function (e) {
+    FileUpload.prototype.validateAndUploadFiles = function validateAndUploadFiles(fileDocumentGuid, file, lastFile, successFunction, errorFunction) {
+        let isValidFile = this.validate(file, lastFile);
+        if(isValidFile.isValid) {
+            file.id = fileDocumentGuid;
+            this.appendLoader(file);
+            const self = this;
+            window.mx.data.saveDocument(file.id, file.name, {}, file, function (e) {
+                const success = self.contextObject.addReference("TestSuite.files", file.id);
+                if(success === false) {
                     errorFunction(e, file);
-                });
-
-            } else {
-                this.appendInvalidFileMessage(isValidFile.message);
-            }
+                } else {
+                    successFunction(e, file);
+                }
+            }, function (e) {
+                errorFunction(e, file);
+            });
+        } else {
+            this.appendInvalidFileMessage(isValidFile.message);
         }
-        this.inputElement.value = '';
-        this.guids.length = 0;
     };
 
     FileUpload.prototype.appendLoader = function appendLoader(file) {
@@ -61,10 +62,13 @@ define(["./jquery-1.11.2"], function (jquery) {
         this.details.append(this.jQuery("<li class=\"list-group-item no-columns\"><div class=\"alert alert-danger alert-dismissible\" role=\"alert\">"+message+"</div></li>"));
     };
 
-    FileUpload.prototype.validate = function validate(file) {
+    FileUpload.prototype.validate = function validate(file, clearInput) {
         let validSizeMessage = this.validateMaxFileSize(file);
         if(validSizeMessage.isValid) {
             return this.validateExtension(file);
+        }
+        if(clearInput) {
+            this.clearInput();
         }
         return validSizeMessage;
     };
@@ -103,6 +107,10 @@ define(["./jquery-1.11.2"], function (jquery) {
             message: validationMessage
         };
     };
+
+    FileUpload.prototype.clearInput = function clearInput() {
+        this.inputElement.value = '';
+    }
 
     FileUpload.prototype.formatSize = function formatSize(bytes) {
         var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
