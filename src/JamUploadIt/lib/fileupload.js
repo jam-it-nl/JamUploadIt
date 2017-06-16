@@ -29,28 +29,46 @@ define(["./jquery-1.11.2"], function (jquery) {
     };
 
     FileUpload.prototype.validateAndUploadFiles = function validateAndUploadFiles(files, successFunction, errorFunction) {
-        for(let i = 0 ; i < files.length; i++) {
-            let file  = files[i];
-            let isValidFile = this.validate(file);
-            if(isValidFile.isValid) {
+        let i = 0;
+        while(this.guids.length > 0) {
+            let id = this.guids.shift();
+            if(i < files.length) {
+                let file  = files[i];
+                let isValidFile = this.validate(file);
+                if(isValidFile.isValid) {
 
-                file.id = this.guids.shift();
-                if(file.id == undefined) {
-                    break;
+                    file.id = id;
+                    this.appendLoader(file);
+                    let self = this;
+                    window.mx.data.saveDocument(file.id, file.name, {}, file, function (e) {
+                        successFunction(e, file);
+                    }, function (e) {
+                        errorFunction(e, file);
+                        self.removeObject(file.id);
+                    });
+                } else {
+                    this.appendInvalidFileMessage(isValidFile.message);
+                    this.removeObject(id);
                 }
-                this.appendLoader(file);
-                window.mx.data.saveDocument(file.id, file.name, {}, file, function (e) {
-                    successFunction(e, file);
-                }, function (e) {
-                    errorFunction(e, file);
-                });
-
             } else {
-                this.appendInvalidFileMessage(isValidFile.message);
+                this.removeObject(id);
             }
+            i++;
         }
         this.inputElement.value = '';
         this.guids.length = 0;
+    };
+
+    FileUpload.prototype.removeObject = function removeObject(guid) {
+        mx.data.remove({
+            guid: guid,
+            callback: function() {
+                console.log("Object removed");
+            },
+            error: function(e) {
+                console.log("Error occurred attempting to remove object " + e);
+            }
+        });
     };
 
     FileUpload.prototype.appendLoader = function appendLoader(file) {
