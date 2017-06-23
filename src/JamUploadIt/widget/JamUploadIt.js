@@ -127,10 +127,10 @@ define([
                 });
             });
 
-            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
+            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
+            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
+            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
+            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
 
         },
 
