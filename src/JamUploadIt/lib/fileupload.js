@@ -55,9 +55,20 @@ define(["./jquery-1.11.2"], function (jquery) {
             }
             i++;
         }
+        this.dispatchResizeEvent();
         this.inputElement.value = '';
         this.guids.length = 0;
     };
+
+    FileUpload.prototype.dispatchResizeEvent= function dispatchResizeEvent() {
+        if(document.createEvent instanceof Function) {
+            var evt = document.createEvent("CustomEvent");
+            evt.initEvent('resize', true, false);
+            window.dispatchEvent(evt);
+        } else {
+            window.dispatchEvent(new Event('resize'));
+        }
+    }
 
     FileUpload.prototype.removeObject = function removeObject(guid) {
         mx.data.remove({

@@ -110,12 +110,6 @@ define([
             this._contextObj = obj;
             this._resetSubscriptions();
             this._updateRendering(callback); // We're passing the callback to updateRendering to be called after DOM-manipulation
-
-            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-            // this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-
         },
 
         // mxui.widget._WidgetBase.enable is called when the widget should enable editing. Implement to enable editing if widget is input widget.
