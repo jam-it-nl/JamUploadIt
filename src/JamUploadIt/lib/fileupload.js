@@ -10,7 +10,6 @@ define(["./jquery-1.11.2"], function (jquery) {
         this.details = window.$(uploadDetailsNode);
         this.maxFileSize = settings.maxFileSize;
         this.supportedExtensions = settings.supportedExtensions;
-        this.filesAttribute= settings.filesAttribute
     };
 
     FileUpload.prototype.setEventBinding = function setEventBinding(getGuid, successFunction, errorFunction) {
@@ -27,7 +26,6 @@ define(["./jquery-1.11.2"], function (jquery) {
                         last = true
                     }
                     self.validateAndUploadFiles(guid, files[i], last, successFunction, errorFunction);
-
                 });
             }
 
@@ -39,14 +37,8 @@ define(["./jquery-1.11.2"], function (jquery) {
         if(isValidFile.isValid) {
             file.id = fileDocumentGuid;
             this.appendLoader(file);
-            const self = this;
             window.mx.data.saveDocument(file.id, file.name, {}, file, function (e) {
-                const success = self.contextObject.addReference(self.filesAttribute, file.id);
-                if(success === false) {
-                    errorFunction(e, file);
-                } else {
-                    successFunction(e, file);
-                }
+                successFunction(e, file);
             }, function (e) {
                 errorFunction(e, file);
             });

@@ -12,13 +12,6 @@
             <category>Behavior</category>
             <description></description>
         </property>
-
-        <property key="filesAttribute" type="entity" isPath="optional" pathType="referenceSet" required="true">
-            <caption>files set</caption>
-            <category>Behavior</category>
-            <description>The reference to FileDocument set</description>
-        </property>
-
 		<property key="maxFileSize" type="integer" defaultValue="0">
 			<caption>Maximum file size</caption>
 			<category>Behavior</category>
@@ -29,9 +22,9 @@
 			<category>Behavior</category>
 			<description>Valid filetypes to be uploaded example jpg,jpeg,png</description>
 		</property>
-        <property key="createFileDocuments" type="microflow" required="false">
+        <property key="createFileDocument" type="microflow" required="false">
             <caption>Microflow</caption>
-            <category>Events</category>
+            <category>Behavior</category>
             <description>The microflow that will be executed on click</description>
             <returnType type="Object" entityProperty="fileEntity" />
         </property>

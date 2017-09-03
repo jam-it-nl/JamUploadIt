@@ -53,13 +53,9 @@ define([
         uploadDetailsNode: null,
 
         // Parameters configured in the Modeler.
-        createFileDocuments: "",
+        createFileDocument: "",
         maxFileSize: "",
-        maxFiles: "",
         fileTypes:"",
-        timeout:"",
-        filesAttribute:"",
-        fileEntity:"",
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
@@ -108,30 +104,18 @@ define([
             let fileUploadSettings = {
                 supportedExtensions: supportedExtensions,
                 maxFileSize: maxFileSize,
-                fileEntity: this.fileEntity,
-                filesAttribute: this.filesAttribute.substr(0, this.filesAttribute.indexOf("/"))
+                fileEntity: this.fileEntity
             };
 
             this._fileUpload = new FileUpload(this._contextObj, this.uploadInputNode, this.uploadDetailsNode, fileUploadSettings);
             let self = this;
             this._fileUpload.setEventBinding((uploadFunction) => {
-                mx.data.create({
-                    entity: self.fileEntity,
-                    callback: function(obj) {
-                        uploadFunction(obj.getGuid());
-                    },
-                    error: function(e) {
-                        console.log("an error occured: " + e);
-                        self.uploadInputNode.value = '';
-                    }
+                self._execMf(self.createFileDocument, self._contextObj.getGuid(), (objects)=>{
+                    let guid = objects[0].getGuid();
+                    console.log(`callback guid ${guid}`);
+                    uploadFunction(guid);
                 });
             });
-
-            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), function(objects) {console.log(objects[0].getGuid())});
-
         },
 
         // mxui.widget._WidgetBase.enable is called when the widget should enable editing. Implement to enable editing if widget is input widget.
@@ -169,7 +153,7 @@ define([
         },
 
         getGuids : function (cb) {
-            this._execMf(this.createFileDocuments, this._contextObj.getGuid(), cb);
+            this._execMf(this.createFileDocument, this._contextObj.getGuid(), cb);
         },
 
         _execMf: function (mf, guid, cb) {
