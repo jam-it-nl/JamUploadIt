@@ -10,6 +10,7 @@ define(["./jquery-1.11.2"], function (jquery) {
         this.details = window.$(uploadDetailsNode);
         this.maxFileSize = settings.maxFileSize;
         this.supportedExtensions = settings.supportedExtensions;
+        this.completedGuidRequests = 0;
     };
 
     FileUpload.prototype.setEventBinding = function setEventBinding(getGuid, successFunction, errorFunction) {
@@ -20,13 +21,17 @@ define(["./jquery-1.11.2"], function (jquery) {
         this.inputElement.onchange = function() {
             let files = self.inputElement.files;
             for(let i = 0 ; i < files.length; i++) {
+                let file = files[i];
+                file.id = self.guid();
+                self.appendLoader(file);
                 getGuid((guid) => {
                     let last = false;
                     if(i == files.length -1) {
                         last = true
                     }
                     self.validateAndUploadFiles(guid, files[i], last, successFunction, errorFunction);
-                });
+                    self.completedGuidRequest();
+                }, () => {self.completedGuidRequest(); errorFunction(undefined, file)});
             }
 
         }
@@ -35,9 +40,8 @@ define(["./jquery-1.11.2"], function (jquery) {
     FileUpload.prototype.validateAndUploadFiles = function validateAndUploadFiles(fileDocumentGuid, file, lastFile, successFunction, errorFunction) {
         let isValidFile = this.validate(file, lastFile);
         if(isValidFile.isValid) {
-            file.id = fileDocumentGuid;
-            this.appendLoader(file);
-            window.mx.data.saveDocument(file.id, file.name, {}, file, function (e) {
+            file.guid = fileDocumentGuid;
+            window.mx.data.saveDocument(file.guid, file.name, {}, file, function (e) {
                 successFunction(e, file);
             }, function (e) {
                 errorFunction(e, file);
@@ -57,11 +61,9 @@ define(["./jquery-1.11.2"], function (jquery) {
 
     FileUpload.prototype.validate = function validate(file, clearInput) {
         let validSizeMessage = this.validateMaxFileSize(file);
+
         if(validSizeMessage.isValid) {
             return this.validateExtension(file);
-        }
-        if(clearInput) {
-            this.clearInput();
         }
         return validSizeMessage;
     };
@@ -128,6 +130,25 @@ define(["./jquery-1.11.2"], function (jquery) {
         statusElement.classList.add("glyphicon");
         statusElement.classList.add("glyphicon-remove");
     };
+
+    FileUpload.prototype.guid = function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    };
+
+    FileUpload.prototype.completedGuidRequest = function completedGuidRequest() {
+        this.completedGuidRequests++;
+        if(this.completedGuidRequests == this.inputElement.files.length) {
+            this.completedGuidRequests = 0;
+            this.inputElement.value = '';
+        }
+    }
+
     return {FileUpload: FileUpload};
 });
 

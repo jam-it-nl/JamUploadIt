@@ -109,12 +109,12 @@ define([
 
             this._fileUpload = new FileUpload(this._contextObj, this.uploadInputNode, this.uploadDetailsNode, fileUploadSettings);
             let self = this;
-            this._fileUpload.setEventBinding((uploadFunction) => {
+            this._fileUpload.setEventBinding((uploadFunction, errorFunction) => {
                 self._execMf(self.createFileDocument, self._contextObj.getGuid(), (objects)=>{
                     let guid = objects[0].getGuid();
                     console.log(`callback guid ${guid}`);
                     uploadFunction(guid);
-                });
+                }, errorFunction);
             });
         },
 
@@ -156,7 +156,7 @@ define([
             this._execMf(this.createFileDocument, this._contextObj.getGuid(), cb);
         },
 
-        _execMf: function (mf, guid, cb) {
+        _execMf: function (mf, guid, cb, errorFunction) {
             if (mf && guid) {
                 console.log(this.id + "._execMf" + guid);
                 mx.data.action({
@@ -168,6 +168,7 @@ define([
                     callback: cb,
                     error: function (error) {
                         console.debug(error.description);
+                        errorFunction();
                     }
                 });
             }
