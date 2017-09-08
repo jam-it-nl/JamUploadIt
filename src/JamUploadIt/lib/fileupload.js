@@ -21,17 +21,19 @@ define(["./jquery-1.11.2"], function (jquery) {
         this.inputElement.onchange = function() {
             let files = self.inputElement.files;
             for(let i = 0 ; i < files.length; i++) {
-                let file = files[i];
-                file.id = self.guid();
-                self.appendLoader(file);
-                getGuid((guid) => {
-                    let last = false;
-                    if(i == files.length -1) {
-                        last = true
-                    }
-                    self.validateAndUploadFiles(guid, files[i], last, successFunction, errorFunction);
-                    self.completedGuidRequest();
-                }, () => {self.completedGuidRequest(); errorFunction(undefined, file)});
+                getGuid(()=> {}, ()=> {});
+
+                // let file = files[i];
+                // file.id = self.guid();
+                // self.appendLoader(file);
+                // getGuid((guid) => {
+                //     let last = false;
+                //     if(i == files.length -1) {
+                //         last = true
+                //     }
+                //     self.validateAndUploadFiles(guid, files[i], last, successFunction, errorFunction);
+                //     self.completedGuidRequest();
+                // }, () => {self.completedGuidRequest(); errorFunction(undefined, file)});
             }
 
         }
