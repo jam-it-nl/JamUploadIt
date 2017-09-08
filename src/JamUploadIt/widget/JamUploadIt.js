@@ -116,12 +116,6 @@ define([
                     uploadFunction(guid);
                 }, errorFunction);
             });
-
-            window.test = () => {
-                for(let i = 0; i < 20; i++) {
-                    this._execMf(self.createFileDocument, self._contextObj.getGuid(), () => {}, ()=>{});
-                }
-            }
         },
 
         // mxui.widget._WidgetBase.enable is called when the widget should enable editing. Implement to enable editing if widget is input widget.
