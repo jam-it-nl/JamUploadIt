@@ -48,6 +48,7 @@ define(["./jquery-1.11.2"], function (jquery) {
             });
         } else {
             this.appendInvalidFileMessage(isValidFile.message);
+            errorFunction(undefined, file);
         }
     };
 
