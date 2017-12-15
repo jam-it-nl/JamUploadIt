@@ -12,9 +12,15 @@ define(["./jquery-1.11.2"], function (jquery) {
         this.guids = [];
     };
 
-    FileUpload.prototype.setEventBinding = function setEventBinding(getGuids, successFunction, errorFunction) {
-        successFunction = successFunction || this.defaultSuccess;
-        errorFunction = errorFunction || this.defaultError;
+    FileUpload.prototype.setEventBinding = function setEventBinding(getGuids, additionalSuccessFunction, additionalErrorFunction) {
+        let successFunction = (event, file) => {
+            additionalSuccessFunction();
+            this.defaultSuccess(event, file);
+        };
+        let errorFunction = (event, file) => {
+            additionalErrorFunction();
+            this.defaultError(event, file);
+        };
 
         let self = this;
         this.inputElement.onchange = function() {
@@ -36,7 +42,6 @@ define(["./jquery-1.11.2"], function (jquery) {
                 let file  = files[i];
                 let isValidFile = this.validate(file);
                 if(isValidFile.isValid) {
-
                     file.id = id;
                     this.appendLoader(file);
                     let self = this;

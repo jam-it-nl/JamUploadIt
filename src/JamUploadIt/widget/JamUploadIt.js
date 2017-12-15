@@ -54,6 +54,8 @@ define([
 
         // Parameters configured in the Modeler.
         createFileDocuments: "",
+        uploadFileSuccess: "",
+        uploadFileError: "",
         maxFileSize: "",
         maxFiles: "",
         fileTypes:"",
@@ -87,7 +89,7 @@ define([
                 supportedExtensions =  this.fileTypes.split(',');
             }
 
-            let maxFileSize = this.maxFileSize
+            let maxFileSize = this.maxFileSize;
 
             let fileUploadSettings = {
                 supportedExtensions: supportedExtensions,
@@ -159,11 +161,23 @@ define([
         _setupEvents: function () {
             logger.debug(this.id + "._setupEvents");
             let self = this;
-            this._fileUpload.setEventBinding(function(cb) {self.getGuids(cb);});
+            this._fileUpload.setEventBinding(function(cb) {self.getGuids(cb);}, function() {self.successFunction();}, function() {this.errorFunction(); });
         },
 
         getGuids : function (cb) {
             this._execMf(this.createFileDocuments, this._contextObj.getGuid(), cb);
+        },
+
+        successFunction : function() {
+            if(!!this.uploadFileSuccess && this.uploadFileSuccess.length > 0) {
+                this._execMf(this.uploadFileSuccess, this._contextObj.getGuid(), ()=>{});
+            }
+        },
+
+        errorFunction : function() {
+            if(!!this.uploadFileError && this.uploadFileError.length > 0) {
+                this._execMf(this.uploadFileError, this._contextObj.getGuid(), ()=>{});
+            }
         },
 
         _execMf: function (mf, guid, cb) {
