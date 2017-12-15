@@ -14,11 +14,11 @@ define(["./jquery-1.11.2"], function (jquery) {
 
     FileUpload.prototype.setEventBinding = function setEventBinding(getGuids, additionalSuccessFunction, additionalErrorFunction) {
         let successFunction = (event, file) => {
-            additionalSuccessFunction();
+            additionalSuccessFunction(file.id);
             this.defaultSuccess(event, file);
         };
         let errorFunction = (event, file) => {
-            additionalErrorFunction();
+            additionalErrorFunction(file.id);
             this.defaultError(event, file);
         };
 

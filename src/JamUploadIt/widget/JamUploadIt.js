@@ -161,22 +161,22 @@ define([
         _setupEvents: function () {
             logger.debug(this.id + "._setupEvents");
             let self = this;
-            this._fileUpload.setEventBinding(function(cb) {self.getGuids(cb);}, function() {self.successFunction();}, function() {this.errorFunction(); });
+            this._fileUpload.setEventBinding(function(cb) {self.getGuids(cb);}, function(successContextId) {self.successFunction(successContextId);}, function(errorContextId) {this.errorFunction(errorContextId); });
         },
 
         getGuids : function (cb) {
             this._execMf(this.createFileDocuments, this._contextObj.getGuid(), cb);
         },
 
-        successFunction : function() {
+        successFunction : function(fileContextId) {
             if(!!this.uploadFileSuccess && this.uploadFileSuccess.length > 0) {
-                this._execMf(this.uploadFileSuccess, this._contextObj.getGuid(), ()=>{});
+                this._execMf(this.uploadFileSuccess, fileContextId, ()=>{});
             }
         },
 
-        errorFunction : function() {
+        errorFunction : function(fileContextId) {
             if(!!this.uploadFileError && this.uploadFileError.length > 0) {
-                this._execMf(this.uploadFileError, this._contextObj.getGuid(), ()=>{});
+                this._execMf(this.uploadFileError, fileContextId, ()=>{});
             }
         },
 

@@ -24,18 +24,16 @@
 			<returnType type="Object" isList="true" entityProperty="test"/>
 		</property>
 
-        <property key="uploadFileSuccess" type="microflow" required="false" defaultValue="">
+        <property key="uploadFileSuccess" type="string" required="false" defaultValue="">
             <caption>File success microflow</caption>
             <category>Behavior</category>
             <description>The microflow that will be executed after a file is successfully uploaded</description>
-            <returnType type="Void" />
         </property>
 
-        <property key="uploadFileError" type="microflow" required="false" defaultValue="">
+        <property key="uploadFileError" type="string" required="false" defaultValue="">
             <caption>File error microflow</caption>
             <category>Behavior</category>
             <description>The microflow that will be executed after an upload error occured</description>
-            <returnType type="Void" />
         </property>
 
         <property key="test" type="entity" required="false" isPath="no">
