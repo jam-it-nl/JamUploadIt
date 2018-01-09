@@ -13,16 +13,16 @@ define(["./jquery-1.11.2"], function (jquery) {
     };
 
     FileUpload.prototype.setEventBinding = function setEventBinding(getGuids, additionalSuccessFunction, additionalErrorFunction) {
-        let successFunction = (event, file) => {
-            additionalSuccessFunction(file.id);
-            this.defaultSuccess(event, file);
-        };
-        let errorFunction = (event, file) => {
-            additionalErrorFunction(file.id);
-            this.defaultError(event, file);
-        };
-
         let self = this;
+
+        let successFunction = function (event, file) {
+            additionalSuccessFunction(file.id);
+            self.defaultSuccess(event, file);
+        };
+        let errorFunction = function(event, file) {
+            additionalErrorFunction(file.id);
+            self.defaultError(event, file);
+        };
         this.inputElement.onchange = function() {
             let files = self.inputElement.files;
             getGuids( function (objects) {
@@ -31,7 +31,7 @@ define(["./jquery-1.11.2"], function (jquery) {
                 }
                 self.validateAndUploadFiles(files,successFunction, errorFunction);
             });
-        }
+        };
     };
 
     FileUpload.prototype.validateAndUploadFiles = function validateAndUploadFiles(files, successFunction, errorFunction) {

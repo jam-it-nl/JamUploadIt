@@ -170,13 +170,13 @@ define([
 
         successFunction : function(fileContextId) {
             if(!!this.uploadFileSuccess && this.uploadFileSuccess.length > 0) {
-                this._execMf(this.uploadFileSuccess, fileContextId, ()=>{});
+                this._execMf(this.uploadFileSuccess, fileContextId, function() {});
             }
         },
 
         errorFunction : function(fileContextId) {
             if(!!this.uploadFileError && this.uploadFileError.length > 0) {
-                this._execMf(this.uploadFileError, fileContextId, ()=>{});
+                this._execMf(this.uploadFileError, fileContextId, function() {});
             }
         },
 
