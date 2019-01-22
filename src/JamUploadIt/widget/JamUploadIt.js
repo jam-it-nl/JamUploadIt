@@ -60,6 +60,7 @@ define([
         maxFiles: "",
         fileTypes:"",
         timeout:"",
+        showLoader:"",
 
         // Internal variables. Non-primitives created in the prototype are shared between all widget instances.
         _handles: null,
@@ -89,10 +90,12 @@ define([
             }
 
             let maxFileSize = this.maxFileSize;
+            let showLoader = this.showLoader;
 
             let fileUploadSettings = {
                 supportedExtensions: supportedExtensions,
-                maxFileSize: maxFileSize
+                maxFileSize: maxFileSize,
+                showLoader: showLoader
             };
 
             this._fileUpload = new FileUpload(this.uploadInputNode, this.uploadDetailsNode, fileUploadSettings);

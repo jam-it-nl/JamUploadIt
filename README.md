@@ -18,3 +18,8 @@ For any request or bug please create an issue at [GitHub](https://github.com/JAM
 # Build project
 * npm install
 * gulp build
+
+# Updating
+* To update all dev dependencies in package.json: 
+** npm install -g npm-check-updates
+** npm-check-updates -u

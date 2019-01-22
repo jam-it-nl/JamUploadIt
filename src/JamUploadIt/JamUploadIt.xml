@@ -36,6 +36,12 @@
             <description>The microflow that will be executed after an upload error occured</description>
         </property>
 
+        <property key="showLoader" type="boolean" defaultValue="true">
+            <caption>Show loader</caption>
+            <category>Behavior</category>
+            <description>Show the loader and file document after uploading a file</description>
+        </property>
+
         <property key="test" type="entity" required="false" isPath="no">
             <caption>ListType</caption>
             <category>Behavior</category>

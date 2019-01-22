@@ -9,6 +9,7 @@ define(["./jquery-1.11.2"], function (jquery) {
         this.details = window.$(uploadDetailsNode);
         this.maxFileSize = settings.maxFileSize;
         this.supportedExtensions = settings.supportedExtensions;
+        this.showLoader = settings.showLoader;
         this.guids = [];
     };
 
@@ -88,7 +89,9 @@ define(["./jquery-1.11.2"], function (jquery) {
     };
 
     FileUpload.prototype.appendLoader = function appendLoader(file) {
-        this.details.append(this.jQuery("<li class=\"list-group-item\"><div class=\"loader\" id=\"loader-"+file.id+"\"></div><span class=\"name\">"+file.name+"</span></li>"));
+        if (this.showLoader){
+            this.details.append(this.jQuery("<li class=\"list-group-item\"><div class=\"loader\" id=\"loader-"+file.id+"\"></div><span class=\"name\">"+file.name+"</span></li>"));
+        }
     };
 
     FileUpload.prototype.appendInvalidFileMessage = function appendInvalidFileMessage(message) {
