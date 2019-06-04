@@ -90,7 +90,13 @@ define(["./jquery-1.11.2"], function (jquery) {
 
     FileUpload.prototype.appendLoader = function appendLoader(file) {
         if (this.showLoader){
-            this.details.append(this.jQuery("<li class=\"list-group-item\"><div class=\"loader\" id=\"loader-"+file.id+"\"></div><span class=\"name\">"+file.name+"</span></li>"));
+
+            let details = this.details;
+            setTimeout(function(){ 
+                if (file.isHandled != true){
+                   details.append(this.jQuery("<li id=\"details-"+file.id+"\" class=\"list-group-item\"><div class=\"loader\" id=\"loader-"+file.id+"\"></div><span class=\"name\">"+file.name+"</span></li>"));
+                }
+            }, 200);
         }
     };
 
@@ -152,13 +158,17 @@ define(["./jquery-1.11.2"], function (jquery) {
     };
 
     FileUpload.prototype.defaultSuccess = function defaultSuccess(e, file) {
-        let statusElement = document.getElementById("loader-" + file.id);
-        statusElement.classList.remove("loader");
-        statusElement.classList.add("glyphicon");
-        statusElement.classList.add("glyphicon-ok");
+        file.isHandled = true;
+        let statusElement = document.getElementById("details-" + file.id);
+
+        if (statusElement){ 
+            statusElement.remove();
+        }
+        
     };
 
     FileUpload.prototype.defaultError = function defaultError(e, file) {
+        file.isHandled = true;
         let statusElement = document.getElementById("loader-" + file.id);
         statusElement.classList.remove("loader");
         statusElement.classList.add("glyphicon");
