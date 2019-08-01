@@ -36,6 +36,9 @@ define(["./jquery-1.11.2"], function (jquery) {
     };
 
     FileUpload.prototype.validateAndUploadFiles = function validateAndUploadFiles(files, successFunction, errorFunction) {
+        
+        this.details.empty();
+        
         let i = 0;
         while(this.guids.length > 0) {
             let id = this.guids.shift();
